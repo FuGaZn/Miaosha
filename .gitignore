@@ -1,0 +1,8 @@
+*.class
+
+/miaosha/.idea
+/miaosha/miaosha-dao/target
+/miaosha/miaosha-service/target
+/miaosha/miaosha-web/target
+
+/miaosha-web/node_modules
