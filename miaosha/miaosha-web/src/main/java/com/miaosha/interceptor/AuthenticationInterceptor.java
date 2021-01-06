@@ -1,7 +1,7 @@
-package com.interceptor;
+package com.miaosha.interceptor;
 
-import com.annotation.PassToken;
-import com.annotation.UserLoginToken;
+import com.miaosha.annotation.PassToken;
+import com.miaosha.annotation.UserLoginToken;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
