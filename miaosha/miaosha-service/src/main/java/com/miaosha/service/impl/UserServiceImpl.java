@@ -21,6 +21,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByID(int id) {
+        return userDao.findByUid(id);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        userDao.save(user);
+    }
+
+    @Override
     public String findSaltByPhone(String ph) {
         return null;
     }
@@ -30,7 +40,8 @@ public class UserServiceImpl implements UserService {
         User user1 = findUserByPhone(user.getPhone());
         if (user1 == null)
             return false;
-        if (user1.getPassword().equals(MyMD5.encrypt(user.getPassword()+user1.getSalt()))){
+        if (user1.getPassword().equals(MyMD5.encrypt(user.getPassword() + user1.getSalt()))) {
+            Logger.getGlobal().info("login success");
             return true;
         }
         return false;
@@ -44,11 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean register(User user) {
         User user1 = findUserByPhone(user.getPhone());
-        if (user1!=null)
+        if (user1 != null)
             return false;
         String salt = StringUtil.getRandomString(6);
         user.setSalt(salt);
-        user.setPassword(MyMD5.encrypt(user.getPassword()+salt));
+        user.setPassword(MyMD5.encrypt(user.getPassword() + salt));
         addUser(user);
         return true;
     }

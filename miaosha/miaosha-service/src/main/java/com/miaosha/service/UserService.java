@@ -1,14 +1,17 @@
 package com.miaosha.service;
 
 import com.miaosha.entity.User;
-import org.springframework.stereotype.Service;
 
 public interface UserService {
     User findUserByPhone(String ph);
 
+    User findUserByID(int id);
+
     String findSaltByPhone(String ph);
 
     void addUser(User user);
+
+    void updateUser(User user);
 
     boolean register(User user);
 

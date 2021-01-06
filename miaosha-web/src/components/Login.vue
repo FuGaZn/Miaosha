@@ -19,8 +19,8 @@
 </template>
 
 <script>
-
 import vcode from "vue-puzzle-vcode";
+import {setToken} from "../utils/auth";
 
 export default {
   name: "login",
@@ -32,12 +32,12 @@ export default {
       if (value === '') {
         callback(new Error('请输入手机号'));
       } else {
-        if (this.ruleForm.phone !== '') {
+        if (this.user.phone !== '') {
           let regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
-          if (!regex.test(this.ruleForm.phone)) {
+          if (!regex.test(this.user.phone)) {
             callback(new Error('手机号格式不正确'))
           } else
-            this.$refs.ruleForm.validateField('password');
+            this.$refs.user.validateField('password');
         }
         callback();
       }
@@ -90,13 +90,15 @@ export default {
     },
     success() {
       this.isShow = false
-      console.log('login')
       let uservo = {
         phone:this.user.phone,
         password: this.$md5(this.user.password)
       }
+      console.log(localStorage.getItem("Ip"))
       this.$http.post("http://localhost:8082/login", uservo).then(response => {
-        console.log(response)
+        const {data} = response
+        const {token} = data.data
+        setToken(token)
         this.$router.push("/home")
       })
 

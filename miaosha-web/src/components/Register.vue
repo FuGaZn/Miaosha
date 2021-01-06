@@ -8,11 +8,13 @@
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" placeholder="Password" v-model="ruleForm.password" class="input"
-                    auto-complete="off"></el-input>
+                    auto-complete="off"
+                    onpaste="return false" oncopy="return false" oncut="return false"></el-input>
         </el-form-item>
         <el-form-item prop="checkPass">
           <el-input type="password" placeholder="Check password" v-model="ruleForm.checkPass" class="input"
-                    auto-complete="off"></el-input>
+                    auto-complete="off"
+                    onpaste="return false" oncopy="return false" oncut="return false"></el-input>
         </el-form-item>
         <el-form-item>
           <el-input @blur="checkVerify" style="width: 185px;" placeholder="Verify Code"
@@ -32,6 +34,8 @@
 </template>
 
 <script>
+import {setToken} from "../utils/auth";
+
 export default {
   name: "register",
   props: {
@@ -121,13 +125,11 @@ export default {
       if (this.standard_verify_code == this.verify_code) {
         this.isErrorShow = false
       }
-    }
-    ,
+    },
 
     sendVerifyCode() {
       this.resetTime()
-    }
-    ,
+    },
 
     resetTime() {
       var _this = this
@@ -162,8 +164,7 @@ export default {
       }
 
       timer = setInterval(countDown, 1000)
-    }
-    ,
+    },
 
     register(formName) {
       this.$refs[formName].validate((valid) => {
@@ -172,13 +173,17 @@ export default {
             phone: this.ruleForm.phone,
             password: this.$md5(this.ruleForm.password),
           }
-          this.$http.post('http://localhost:8082/register', uservo).then()
+          this.$http.post('http://localhost:8082/register', uservo).then(response=>{
+            const {data} = response
+            console.log(data)
+            setToken(data.token)
+            this.$router.push("/home")
+          })
         } else {
           return false;
         }
       });
-    }
-    ,
+    },
 
     info(type, content) {
       if (type === 0) {   //normal info

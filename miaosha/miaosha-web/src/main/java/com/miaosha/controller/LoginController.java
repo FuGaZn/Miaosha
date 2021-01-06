@@ -1,9 +1,12 @@
 package com.miaosha.controller;
 
+import com.auth0.jwt.JWT;
 import com.miaosha.entity.User;
 import com.miaosha.service.UserService;
 import com.miaosha.service.impl.UserServiceImpl;
 import com.miaosha.uitl.Msg;
+import com.miaosha.uitl.TokenUtil;
+import com.miaosha.util.MyMD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +22,52 @@ public class LoginController {
     @PostMapping("/login")
     @ResponseBody
     public Msg login(@RequestBody User user){
-        Logger.getGlobal().info("controller");
-        Logger.getGlobal().info(user.getPassword());
         boolean b = userService.login(user);
         Msg msg = new Msg(20000,"success");
-        if (b == false)
-            msg = new Msg(50000,"fail");
+        if (b == false) {
+            msg = new Msg(50000, "fail");
+            return msg;
+        }
+        User user1 = userService.findUserByPhone(user.getPhone());
+        String token = TokenUtil.getUserToken(user1);
+        msg.getData().put("token", token);
         return msg;
     }
 
     @PostMapping("/register")
-    public Msg register(User user){
+    @ResponseBody
+    public Msg register(@RequestBody User user){
+        Logger.getGlobal().info(user.toString());
         boolean b = userService.register(user);
         Msg msg = new Msg(20000,"success");
-        if (b == false)
-            msg = new Msg(50000,"手机号已存在");
+        if (b == false) {
+            msg = new Msg(50000, "手机号已存在");
+            return msg;
+        }
+        User user1 = userService.findUserByPhone(user.getPhone());
+        String token = TokenUtil.getUserToken(user1);
+        msg.getData().put("token", token);
+        return msg;
+    }
+
+    @PostMapping("/user/modify/pwd")
+    @ResponseBody
+    public Msg modifyPassword(@RequestParam String oldPassword,@RequestParam String newPassword, @RequestHeader("X-token") String token){
+        Msg msg = new Msg(20000,"success");
+        if (token == null|| token.equals("")){
+            msg.setMessage("登陆信息失效，请重新登陆");
+            msg.setCode(50016);
+            return msg;
+        }
+        int uid = JWT.decode(token).getClaim("uid").asInt();
+        User user = userService.findUserByID(uid);
+        if (user.getPassword().equals(MyMD5.encrypt(oldPassword+user.getSalt()))){
+            user.setPassword(MyMD5.encrypt(newPassword+user.getSalt()));
+            userService.updateUser(user);
+        }else{
+            msg.setMessage("原密码错误");
+            msg.setCode(50016);
+        }
         return msg;
     }
 }

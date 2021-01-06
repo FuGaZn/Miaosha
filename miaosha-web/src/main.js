@@ -9,6 +9,8 @@ import Axios from 'axios'
 import VueAxios from 'vue-axios'
 import 'normalize.css/normalize.css'
 import md5 from 'js-md5'
+import "@/permission"
+
 Vue.config.productionTip = false
 Vue.prototype.$md5 = md5
 Vue.use(VueAxios, Axios)
