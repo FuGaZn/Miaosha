@@ -20,32 +20,5 @@ public interface CouponService {
      */
     public Coupon checkCoupon(int cid);
 
-    /**
-     * 将购买记录持久化
-     * @param coupon
-     * @return
-     */
-    public boolean saveCouponRecord(Coupon coupon, int uid);
-
-    /**
-     * 通过消息队列执行持久化操作
-     * @param coupon
-     * @param uid
-     * @return
-     */
-    public void saveCouponRecordByMQ(Coupon coupon, int uid);
-
-    /**
-     * 试图创建订单，如果创建成功，返回id
-     * @param cid
-     * @param uid
-     * @return
-     */
-    public boolean tryCreateCouponRecord(int cid, int uid);
-
-    public boolean checkCouponOrderInCache(int cid, int uid);
-
-    public void delCouponCountCache(int cid);
-
-    public void writeCouponOrderInCache(Coupon coupon, int uid);
+    public int getCouponCount(int cid);
 }

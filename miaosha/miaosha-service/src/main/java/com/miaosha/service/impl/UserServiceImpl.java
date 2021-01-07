@@ -31,11 +31,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String findSaltByPhone(String ph) {
-        return null;
-    }
-
-    @Override
     public boolean login(User user) {
         User user1 = findUserByPhone(user.getPhone());
         if (user1 == null)

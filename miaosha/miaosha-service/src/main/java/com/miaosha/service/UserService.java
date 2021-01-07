@@ -7,8 +7,6 @@ public interface UserService {
 
     User findUserByID(int id);
 
-    String findSaltByPhone(String ph);
-
     void addUser(User user);
 
     void updateUser(User user);

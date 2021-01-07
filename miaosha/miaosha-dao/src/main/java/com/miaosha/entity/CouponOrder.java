@@ -14,6 +14,16 @@ public class CouponOrder {
     int cid;
     @Column
     String description;
+    @Column
+    int success;
+
+    public int getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(int success) {
+        this.success = success;
+    }
 
     public String getDescription() {
         return description;

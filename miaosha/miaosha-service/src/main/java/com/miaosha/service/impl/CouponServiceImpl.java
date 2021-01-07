@@ -6,6 +6,7 @@ import com.miaosha.entity.Coupon;
 import com.miaosha.entity.CouponOrder;
 import com.miaosha.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Logger;
@@ -17,6 +18,8 @@ public class CouponServiceImpl implements CouponService {
     private CouponDao couponDao;
     @Autowired
     private CouponOrderDao couponOrderDao;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public boolean saleCoupon(Coupon coupon) {
@@ -24,75 +27,39 @@ public class CouponServiceImpl implements CouponService {
         return id!=0;
     }
 
+    /**
+     * @param cid
+     * @return
+     */
     @Override
     public Coupon checkCoupon(int cid) {
         Coupon coupon = couponDao.findByCid(cid);
-        if (coupon.getSale() >= coupon.getTotal()) {
-            return null;
+        if (coupon.getSale()<coupon.getTotal())
+            return coupon;
+        return null;
+    }
+
+    @Override
+    public int getCouponCount(int cid) {
+        int count = getCouponCountByCache(cid);
+        if (count <= 0){
+            count = getCouponCountByDB(cid);
+            redisTemplate.opsForValue().set("cid_"+cid, ""+count);
         }
-        return coupon;
+        return count;
     }
 
-    @Override
-    public boolean tryCreateCouponRecord(int cid, int uid) {
-        Coupon coupon = checkCoupon(cid);
-        if (coupon!=null){
-            boolean b = saleCoupon(coupon);
-            if (b == false){
-                return false;
-            }
-            delCouponCountCache(cid);
-            Logger.getGlobal().info("删除缓存");
-            writeCouponOrderInCache(coupon, uid);
-            Logger.getGlobal().info("保存订单至缓存");
-            saveCouponRecord(coupon, uid);
-            Logger.getGlobal().info("保存订单至数据库");
-            return true;
-        }
-        return false;
+
+    public int getCouponCountByCache(int cid){
+        String count = redisTemplate.opsForValue().get("cid_"+cid);
+        if (count == null|| count.length() == 0)
+            return 0;
+        return Integer.valueOf(count);
     }
 
-    @Override
-    public boolean saveCouponRecord(Coupon coupon, int uid) {
-        CouponOrder record = new CouponOrder();
-        record.setDescription(coupon.getDescription());
-        record.setUid(uid);
-        record.setCid(coupon.getCid());
-        int rid = couponOrderDao.save(record).getRid();
-        return false;
-    }
 
-    @Override
-    public void saveCouponRecordByMQ(Coupon coupon, int uid) {
-
-    }
-
-//    @Override
-//    public void saveCouponRecordByMQ(Coupon coupon, int uid) {
-//        CouponOrder record = new CouponOrder();
-//        record.setDescription(coupon.getDescription());
-//        record.setUid(uid);
-//        record.setCid(coupon.getCid());
-//        try {
-//      //      producer.sendMessage(record);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-    @Override
-    public boolean checkCouponOrderInCache(int cid, int uid) {
-        return false;
-    }
-
-    @Override
-    public void delCouponCountCache(int cid) {
-
-    }
-
-    @Override
-    public void writeCouponOrderInCache(Coupon coupon, int uid) {
-
+    public int getCouponCountByDB(int cid) {
+        Coupon coupon = couponDao.findByCid(cid);
+        return coupon.getTotal() - coupon.getSale();
     }
 }
