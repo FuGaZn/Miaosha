@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 @Service
@@ -36,7 +38,7 @@ public class CouponOrderServiceImpl implements CouponOrderService {
                 return true;
             }
         }
-        writeFailCouponOrderInCache(cid, uid);
+      //  writeFailCouponOrderInCache(cid, uid);
         return false;
     }
 
@@ -61,6 +63,12 @@ public class CouponOrderServiceImpl implements CouponOrderService {
     }
 
     @Override
+    public void resetCache() {
+        Set<String> keys = redisTemplate.keys("*");
+        redisTemplate.delete(keys);
+    }
+
+    @Override
     public CouponOrder checkCouponOrderInDB(int cid, int uid) {
         return couponOrderDao.findByCidAndUid(cid, uid);
     }
@@ -73,7 +81,7 @@ public class CouponOrderServiceImpl implements CouponOrderService {
 
     @Override
     public void writeCouponOrderInCache(Coupon coupon, int uid) {
-        Logger.getGlobal().info("保存订单至缓存");
+        Logger.getGlobal().info("保存订单至缓存-2");
         CouponOrder couponOrder = new CouponOrder();
         couponOrder.setCid(coupon.getCid());
         couponOrder.setUid(uid);
@@ -93,5 +101,10 @@ public class CouponOrderServiceImpl implements CouponOrderService {
         String key = cid + "_" + uid+"_cr";
         Gson gson = new Gson();
         redisTemplate.opsForValue().set(key, gson.toJson(couponOrder));
+    }
+
+    @Override
+    public List<CouponOrder> getMyCouponOrders(int uid) {
+        return couponOrderDao.findByUid(uid);
     }
 }

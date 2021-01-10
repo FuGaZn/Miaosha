@@ -1,15 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import Layout from '@/components/layout'
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
-      path: '/',
-      name: 'Login',
-      component: ()=>import('@/views/login')
-    },
     {
       path: '/login',
       name: 'Login',
@@ -21,9 +16,19 @@ export default new Router({
       component: ()=>import('@/views/register')
     },
     {
+      path: '/market',
+      name: 'Market',
+      component: ()=>import('@/views/market')
+    },
+    {
       path: '/home',
       name: 'Home',
       component: ()=>import('@/views/home')
+    },
+    {
+      path: '/',
+      name: '',
+      redirect: '/home',
     }
   ]
 })

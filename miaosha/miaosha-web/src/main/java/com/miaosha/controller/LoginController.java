@@ -1,8 +1,11 @@
 package com.miaosha.controller;
 
 import com.auth0.jwt.JWT;
+import com.miaosha.annotation.UserLoginToken;
+import com.miaosha.dao.UserDao;
 import com.miaosha.entity.User;
 import com.miaosha.service.UserService;
+import com.miaosha.service.impl.CouponOrderServiceImpl;
 import com.miaosha.service.impl.UserServiceImpl;
 import com.miaosha.uitl.Msg;
 import com.miaosha.uitl.TokenUtil;
@@ -18,6 +21,10 @@ public class LoginController {
 
     @Autowired
     UserServiceImpl userService;
+    @Autowired
+    CouponOrderServiceImpl couponOrderService;
+    @Autowired
+    UserDao userDao;
 
     @PostMapping("/login")
     @ResponseBody
@@ -30,6 +37,9 @@ public class LoginController {
         }
         User user1 = userService.findUserByPhone(user.getPhone());
         String token = TokenUtil.getUserToken(user1);
+
+        couponOrderService.resetCache();
+
         msg.getData().put("token", token);
         return msg;
     }
@@ -68,6 +78,20 @@ public class LoginController {
             msg.setMessage("原密码错误");
             msg.setCode(50016);
         }
+        return msg;
+    }
+
+    @GetMapping("/user/info")
+    @ResponseBody
+    @UserLoginToken
+    public Msg getInfo(@RequestHeader("X-token") String token){
+        int uid = JWT.decode(token).getClaim("uid").asInt();
+        Msg msg = new Msg(20000,"");
+        User user = userService.findUserByID(uid);
+        user.setPassword("");
+        user.setUid(0);
+        user.setSalt("");
+        msg.getData().put("userInfo", user);
         return msg;
     }
 }

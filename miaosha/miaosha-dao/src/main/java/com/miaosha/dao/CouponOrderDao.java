@@ -15,4 +15,5 @@ public interface CouponOrderDao extends JpaRepository<CouponOrder, Long> {
     List<CouponOrder> findByCid(int cid);
 
     CouponOrder findByCidAndUid(int cid, int uid);
+
 }

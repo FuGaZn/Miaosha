@@ -3,6 +3,8 @@ package com.miaosha.service;
 import com.miaosha.entity.Coupon;
 import com.miaosha.entity.CouponOrder;
 
+import java.util.List;
+
 public interface CouponOrderService {
     /**
      * 将购买记录持久化
@@ -28,4 +30,8 @@ public interface CouponOrderService {
     public void writeCouponOrderInCache(Coupon coupon, int uid);
 
     public void writeFailCouponOrderInCache(int cid, int uid);
+
+    public List<CouponOrder> getMyCouponOrders(int uid);
+
+    public void resetCache();
 }

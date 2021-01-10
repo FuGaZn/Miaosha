@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -61,5 +62,10 @@ public class CouponServiceImpl implements CouponService {
     public int getCouponCountByDB(int cid) {
         Coupon coupon = couponDao.findByCid(cid);
         return coupon.getTotal() - coupon.getSale();
+    }
+
+    @Override
+    public List<Coupon> getCouponList() {
+        return couponDao.findAll();
     }
 }

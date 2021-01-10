@@ -20,7 +20,7 @@
 
 <script>
 import vcode from "vue-puzzle-vcode";
-import {setToken} from "../utils/auth";
+import {getToken, setToken} from "../utils/auth";
 
 export default {
   name: "login",
@@ -98,7 +98,9 @@ export default {
       this.$http.post("http://localhost:8082/login", uservo).then(response => {
         const {data} = response
         const {token} = data.data
+        console.log('token '+token)
         setToken(token)
+        console.log('getT '+getToken())
         this.$router.push("/home")
       })
 

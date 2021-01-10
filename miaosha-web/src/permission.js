@@ -6,7 +6,7 @@ import {getToken} from "./utils/auth"; // get token from cookie
 
 NProgress.configure({showSpinner: false}) // NProgress Configuration
 
-const whiteList = ['/login', '/register', '/'] // no redirect whitelist
+const whiteList = ['/login', '/register'] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
@@ -18,7 +18,7 @@ router.beforeEach(async (to, from, next) => {
     next()
   } else {
     if (!hasToken) {
-      next('/')
+      next('/login')
       Message.info('登陆信息已失效，请重新登陆')
       NProgress.done()
     }else{

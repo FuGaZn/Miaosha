@@ -4,6 +4,8 @@ import com.miaosha.entity.Coupon;
 import com.miaosha.entity.CouponOrder;
 import com.miaosha.entity.User;
 
+import java.util.List;
+
 public interface CouponService {
 
 
@@ -21,4 +23,7 @@ public interface CouponService {
     public Coupon checkCoupon(int cid);
 
     public int getCouponCount(int cid);
+
+    public List<Coupon> getCouponList();
+
 }
