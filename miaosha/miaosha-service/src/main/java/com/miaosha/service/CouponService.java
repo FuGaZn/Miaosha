@@ -26,4 +26,11 @@ public interface CouponService {
 
     public List<Coupon> getCouponList();
 
+    public List<Coupon> getAbleCouponList();
+
+    public int saveCoupon(Coupon coupon);
+
+    public Coupon publishCoupon(int cid);
+
+    public void deleteCoupon(int cid);
 }

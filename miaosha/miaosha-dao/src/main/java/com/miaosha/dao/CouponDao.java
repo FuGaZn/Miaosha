@@ -14,7 +14,9 @@ import java.util.List;
 public interface CouponDao extends JpaRepository<Coupon, Long> {
     Coupon findByCid(int cid);
 
-   // List<Coupon> findAll();
+    List<Coupon> findAllByAble(int able);
+
+    List<Coupon> findAll();
 
     @Modifying
     @Transactional

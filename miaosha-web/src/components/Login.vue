@@ -29,18 +29,18 @@ export default {
   },
   data() {
     let validatePhone = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入手机号'));
-      } else {
-        if (this.user.phone !== '') {
-          let regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
-          if (!regex.test(this.user.phone)) {
-            callback(new Error('手机号格式不正确'))
-          } else
-            this.$refs.user.validateField('password');
-        }
-        callback();
-      }
+      // if (value === '') {
+      //   callback(new Error('请输入手机号'));
+      // } else {
+      //   if (this.user.phone !== '') {
+      //     let regex = /^(13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9})|(19[0-9]{9})$/;
+      //     if (!regex.test(this.user.phone)) {
+      //       callback(new Error('手机号格式不正确'))
+      //     } else
+      //       this.$refs.user.validateField('password');
+      //   }
+      //   callback();
+      // }
     };
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -97,14 +97,25 @@ export default {
       console.log(localStorage.getItem("Ip"))
       this.$http.post("http://localhost:8082/login", uservo).then(response => {
         const {data} = response
-        const {token} = data.data
-        console.log('token '+token)
-        setToken(token)
-        console.log('getT '+getToken())
-        this.$router.push("/home")
-      })
+        const {code} = data
 
+        // user login
+        if (code === 20000){
+          const {token} = data.data
+          setToken(token)
+          this.$router.push("/home")
+        }else if(code === 20001){
+          console.log('dfadsfa')
+          // admin login
+          const {token} = data.data
+          setToken(token)
+          this.$router.push("/admin")
+        }else{
+          this.info(3, '登陆失败')
+        }
+      })
     },
+
     close() {
       this.isShow = false
     },

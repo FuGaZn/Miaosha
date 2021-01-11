@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     initCoupons() {
-      this.$http.get("http://localhost:8082/coupon/list").then(response => {
+      this.$http.get("http://localhost:8082/coupon/list/able").then(response => {
         const {data} = response
         this.coupons = data.data.coupons
       })
@@ -62,7 +62,6 @@ export default {
       }).then(response => {
         const {data} = response
         const {code, message} = data
-        console.log(code)
         if (code == 20000) {
           localStorage.removeItem('InQueue')
           this.loading = false

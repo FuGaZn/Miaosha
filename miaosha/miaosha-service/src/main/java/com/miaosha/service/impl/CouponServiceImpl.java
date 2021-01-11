@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 @Service
 public class CouponServiceImpl implements CouponService {
@@ -67,5 +70,31 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<Coupon> getCouponList() {
         return couponDao.findAll();
+    }
+
+    @Override
+    public List<Coupon> getAbleCouponList() {
+        return couponDao.findAllByAble(1);
+    }
+
+    @Override
+    public int saveCoupon(Coupon coupon) {
+        return couponDao.save(coupon).getCid();
+    }
+
+    @Override
+    public Coupon publishCoupon(int cid) {
+        Coupon coupon = couponDao.findByCid(cid);
+        coupon.setAble(1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+        coupon.setPublishTime(format.format(Calendar.getInstance()));
+        return couponDao.save(coupon);
+    }
+
+    @Override
+    public void deleteCoupon(int cid) {
+        Coupon coupon = couponDao.findByCid(cid);
+        coupon.setAble(0);
+        couponDao.save(coupon);
     }
 }

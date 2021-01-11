@@ -29,6 +29,11 @@ export default new Router({
       path: '/',
       name: '',
       redirect: '/home',
+    },
+    {
+      path: '/admin',
+      name:'Admin',
+      component: ()=>import('@/views/admin')
     }
   ]
 })

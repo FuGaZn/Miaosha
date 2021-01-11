@@ -13,8 +13,9 @@
 
     </div>
     <div style="width: 500px;margin-left: 260px;position: relative;margin-top: -30px">
-      <span style="position: absolute;left: 10px;top: 10px;font-size: 20px;font-weight: bold;color: #3c3f41">{{userInfo.name}}</span>
-      <span style="position: absolute;left: 10px;top: 60px;color: #3c3f41">手机号：{{userInfo.phone}}</span>
+      <span
+        style="position: absolute;left: 10px;top: 10px;font-size: 20px;font-weight: bold;color: #3c3f41">{{ userInfo.name }}</span>
+      <span style="position: absolute;left: 10px;top: 60px;color: #3c3f41">手机号：{{ userInfo.phone }}</span>
     </div>
   </div>
 </template>
@@ -22,39 +23,39 @@
 <script>
 import Layout from '@/components/layout'
 import {getToken} from "../utils/auth";
+
 export default {
   name: "home",
-  components:{Layout},
+  components: {Layout},
   created() {
     this.initMyCoupons()
     this.initUserInfo()
     localStorage.removeItem('InQueue')
   },
-  data(){
-    return{
-      userInfo:{},
-      myCoupons:[
-      ]
+  data() {
+    return {
+      userInfo: {},
+      myCoupons: []
     }
   },
-  methods:{
-    initUserInfo(){
-      this.$http.get("http://localhost:8082/user/info",{
-        headers:{
-          'X-token':getToken()
+  methods: {
+    initUserInfo() {
+      this.$http.get("http://localhost:8082/user/info", {
+        headers: {
+          'X-token': getToken()
         }
-      }).then(response=>{
+      }).then(response => {
         const {data} = response
         this.userInfo = data.data.userInfo
       })
     },
     initMyCoupons() {
-     // let uid = 1
-      this.$http.get("http://localhost:8082/coupon/list/my",{
-        headers:{
-          'X-token':getToken()
+      // let uid = 1
+      this.$http.get("http://localhost:8082/coupon/list/my", {
+        headers: {
+          'X-token': getToken(),
         }
-      }).then(response=>{
+      }).then(response => {
         const {data} = response
         this.myCoupons = data.data.coupons
       })

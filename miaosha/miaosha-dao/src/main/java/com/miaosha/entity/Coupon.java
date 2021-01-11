@@ -18,6 +18,29 @@ public class Coupon {
     @Column
     int sale;
 
+    //发布时间
+    @Column
+    String publishTime;
+
+    @Column
+    int able;
+
+    public String getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(String publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public int getAble() {
+        return able;
+    }
+
+    public void setAble(int able) {
+        this.able = able;
+    }
+
     public int getCid() {
         return cid;
     }
@@ -48,5 +71,17 @@ public class Coupon {
 
     public void setSale(int sale) {
         this.sale = sale;
+    }
+
+    @Override
+    public String toString() {
+        return "Coupon{" +
+                "cid=" + cid +
+                ", description='" + description + '\'' +
+                ", total=" + total +
+                ", sale=" + sale +
+                ", publishTime='" + publishTime + '\'' +
+                ", able=" + able +
+                '}';
     }
 }

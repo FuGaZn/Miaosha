@@ -62,7 +62,6 @@ public class CouponOrderController {
      */
     @ResponseBody
     @PostMapping("/coupon/order/check")
-    @UserLoginToken
     public Msg checkOrderInCache(@RequestBody CouponOrderVO order,@RequestHeader("X-token") String token){
         int cid = order.getCid();
         int uid = JWT.decode(token).getClaim("uid").asInt();
@@ -85,7 +84,6 @@ public class CouponOrderController {
 
     @ResponseBody
     @PostMapping("/coupon/order/create")
-    @UserLoginToken
     public Msg createCouponOrderMQ(@RequestBody CouponOrderVO order, @RequestHeader("X-token") String token){
         int uid = JWT.decode(token).getClaim("uid").asInt();
         int cid = order.getCid();
