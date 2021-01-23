@@ -6,16 +6,13 @@ import {getToken} from "./utils/auth";
 import Axios from 'axios'
 import VueAxios from "vue-axios"; // get token from cookie
 
-NProgress.configure({showSpinner: false}) // NProgress Configuration
+NProgress.configure({showSpinner: false})
 
-const whiteList = ['/login', '/register'] // no redirect whitelist
-const userList = ['/home','/','/market']
-const adminList = ['/admin']
+const whiteList = ['/login', '/register'] // all user can do in any situation
+const userList = ['/home','/','/market'] // only user can visit
+const adminList = ['/admin'] // only admin can visit
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
   NProgress.start()
-
-  // determine whether the user has logged in
   const hasToken = getToken()
   if (whiteList.includes(to.path)) {
     next()
@@ -38,10 +35,8 @@ router.beforeEach(async (to, from, next) => {
         }else if(code === 20001 && adminList.includes(to.path)){
           next()
         }else{
-
         }
       })
-
     }
   }
 

@@ -84,12 +84,7 @@ export default {
         cancelButtonText: '取消',
         inputType: 'password'
       }).then(({password}) => {
-        this.$http.post("http://localhost:8082/coupon/save",{
-          params:{
-            password: password,
-            coupon:this.coupon_add
-          }
-        },{
+        this.$http.post("http://localhost:8082/coupon/save1",this.coupon_add,{
           headers:{
             'X-token':getToken(),
             'X-Ip':localStorage.getItem("Ip")

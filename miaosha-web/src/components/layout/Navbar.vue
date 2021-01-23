@@ -21,6 +21,9 @@
           <el-input type="password" v-model="modify_password.newPassword" placeholder="输入新密码" style="width: 240px"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-input type="password" v-model="modify_password.newPassword" placeholder="再次输入新密码" style="width: 240px"></el-input>
+        </el-form-item>
+        <el-form-item>
           <el-button @click="modify" type="primary" style="width: 240px">确定</el-button>
         </el-form-item>
       </el-form>

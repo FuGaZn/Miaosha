@@ -33,4 +33,6 @@ public interface CouponService {
     public Coupon publishCoupon(int cid);
 
     public void deleteCoupon(int cid);
+
+    int getCouponCountByCache(int cid);
 }

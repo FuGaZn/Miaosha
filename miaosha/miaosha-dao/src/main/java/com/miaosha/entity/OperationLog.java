@@ -1,10 +1,10 @@
 package com.miaosha.entity;
 
 public class OperationLog {
-    String ip_address;
-    String workerID;
-    String time;
-    String description;
+    String ip_address; // ip地址
+    String workerID; //管理员的工号
+    String time; //管理员的操作时间
+    String description; //针对管理员操作的描述
 
     public String getWorkerID() {
         return workerID;

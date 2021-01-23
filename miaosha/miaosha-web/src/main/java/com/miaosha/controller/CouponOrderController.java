@@ -29,7 +29,7 @@ public class CouponOrderController {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    RateLimiter rateLimiter = RateLimiter.create(20);
+    RateLimiter rateLimiter = RateLimiter.create(50);
 
 //    @ResponseBody
 //    @PostMapping("/coupon/order")
@@ -84,10 +84,11 @@ public class CouponOrderController {
 
     @ResponseBody
     @PostMapping("/coupon/order/create")
-    public Msg createCouponOrderMQ(@RequestBody CouponOrderVO order, @RequestHeader("X-token") String token){
+    public Msg createCouponOrder(@RequestBody CouponOrderVO order, @RequestHeader("X-token") String token){
         int uid = JWT.decode(token).getClaim("uid").asInt();
         int cid = order.getCid();
         Logger.getGlobal().info("cid "+cid+" "+"uid "+uid);
+
         if (!rateLimiter.tryAcquire(1000, TimeUnit.MILLISECONDS)){
             Logger.getGlobal().info("限流，失败");
             Msg msg = new Msg(50001,"抢票失败");
@@ -101,14 +102,13 @@ public class CouponOrderController {
             return new Msg(20001,"您已经抢到了该优惠券");
         }
 
-        int couponCount = couponService.getCouponCount(cid);
+
+        int couponCount = couponService.getCouponCountByCache(cid);
         if (couponCount <= 0){
             return new Msg(50002,"优惠券被抢光啦！下次再来吧");
         }
 
         Logger.getGlobal().info("有库存，下一步");
-//        Coupon coupon = couponService.checkCoupon(order.getCid());
-//        boolean b = couponService.saleCoupon(coupon);
         try {
             CouponOrderVO orderVO = new CouponOrderVO(cid, uid);
             producer.sendMessage(orderVO);

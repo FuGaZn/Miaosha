@@ -12,27 +12,28 @@ import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 @Service
 public class OperationLogDaoImpl implements OperationLogDao {
     String dir_path = "D:\\Miaosha\\log";
 
-    /**
-     * 向文件系统写入操作日志
-     * 操作日志内容：ip、用户id、操作时间、操作内容
-     * 为每天都创建一个日志文件，该文件保存该天所有的操作内容
-     * @param log
-     */
     @Override
     public void saveOperationLog(OperationLog log) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        String date = simpleDateFormat.format(Calendar.getInstance());
-        Path path = Paths.get(dir_path,date,".oplog");
+        String date = simpleDateFormat.format(new Date());
+        Path path = Paths.get(dir_path);
         try {
+            if (!Files.exists(path)){
+                Files.createDirectory(path);
+            }
+            path = Paths.get(dir_path,date+".oplog");
             if (!Files.exists(path)){
                 Files.createFile(path);
             }
-            BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            BufferedWriter writer = Files.newBufferedWriter
+                    (path, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            System.out.println(log.toString());
             writer.write(log.toString());
             writer.write("\n\r");
         }catch (Exception e){

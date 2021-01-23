@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -60,6 +61,27 @@ public class CouponController {
         Msg msg = new Msg(20000, "");
         List<Coupon> coupons = couponService.getCouponList();
         msg.getData().put("coupons", coupons);
+        return msg;
+    }
+
+    @PostMapping("/coupon/save1")
+    @ResponseBody
+    public Msg test(@RequestBody Coupon coupon,
+                          @RequestHeader("X-token") String token, @RequestHeader("X-Ip") String ip) {
+        Msg msg = new Msg(20000, "");
+        int aid = JWT.decode(token).getClaim("uid").asInt();
+            int cid = couponService.saveCoupon(coupon);
+            coupon.setCid(cid);
+
+            msg.getData().put("cid", cid);
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            OperationLog log = new OperationLog();
+            log.setIp_address(ip);
+            log.setTime(format.format(new Date()));
+            log.setWorkerID(adminService.findByAid(aid).getWorkerID());
+            log.setDescription("Save coupon: "+coupon.toString());
+            operationLogService.saveOperationLog(log);
         return msg;
     }
 

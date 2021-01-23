@@ -38,7 +38,7 @@ public class CouponOrderServiceImpl implements CouponOrderService {
                 return true;
             }
         }
-      //  writeFailCouponOrderInCache(cid, uid);
+        writeFailCouponOrderInCache(cid, uid);
         return false;
     }
 
